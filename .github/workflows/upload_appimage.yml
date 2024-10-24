@@ -27,7 +27,7 @@ jobs:
           # Create a container from the image
           container_id=$(docker create appimage-builder:latest)
           # Copy the AppImage from the container to the host
-          docker cp $container_id:/FT_SCServo-x86_64.AppImage ./
+          docker cp $container_id:/opt/ft_scservo/build/FT_SCServo-x86_64.AppImage ./
           # Clean up the container
           docker rm $container_id
       - name: Upload AppImage artifact

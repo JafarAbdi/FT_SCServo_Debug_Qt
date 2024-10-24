@@ -23,7 +23,3 @@ RUN cmake .. -DCMAKE_INSTALL_PREFIX=/usr && \
     make -j `nproc` && \
     make install DESTDIR=AppDir && \
     /opt/ft_scservo/AppImage.sh
-
-FROM scratch AS exporter
-COPY --from=builder /opt/ft_scservo/build/FT_SCServo-x86_64.AppImage /
-
