@@ -1,0 +1,38 @@
+name: Build and Upload AppImage
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+    - name: Build Docker image
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        push: false
+        load: true
+        tags: appimage-builder:latest
+    - name: Extract AppImage from container
+      run: |
+        # Create a container from the image
+        container_id=$(docker create appimage-builder:latest)
+        # Copy the AppImage from the container to the host
+        docker cp $container_id:/FT_SCServo-x86_64.AppImage ./
+        # Clean up the container
+        docker rm $container_id
+    - name: Upload AppImage artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: FT_SCServo-x86_64.AppImage
+        path: FT_SCServo-x86_64.AppImage
+        compression-level: 0  # AppImage is already compressed
